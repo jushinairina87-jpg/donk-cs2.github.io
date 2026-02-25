@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ТОП-10 КОМАНД CS2 | HLTV Рейтинг Февраль 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background:#0a0a0a;
+      color:#fff;
+      font-family:'Rajdhani', sans-serif;
+      overflow-x:hidden;
+    }
+    canvas { 
+      position:fixed; top:0; left:0; z-index:1; opacity:0.08; 
+    }
+    .container { position:relative; z-index:10; min-height:100vh; }
+    header {
+      background:rgba(0,0,0,0.85);
+      backdrop-filter:blur(20px);
+      padding:1rem 0;
+      position:fixed;
+      width:100%;
+      top:0;
+      z-index:100;
+      border-bottom:2px solid #ff0040;
+    }
+    nav {
+      max-width:1400px;
+      margin:0 auto;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:0 2rem;
+    }
+    .logo {
+      font-family:'Orbitron', monospace;
+      font-size:2.2rem;
+      font-weight:900;
+      background:linear-gradient(45deg, #ff0040, #00ff88, #ffaa00);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      text-shadow:0 0 35px rgba(255,0,64,0.6);
+    }
+    .nav-links {
+      display:flex;
+      list-style:none;
+      gap:2.5rem;
+    }
+    .nav-links a {
+      color:#ddd;
+      text-decoration:none;
+      font-weight:500;
+      transition:all 0.3s;
+    }
+    .nav-links a:hover {
+      color:#ff0040;
+      text-shadow:0 0 12px #ff0040;
+    }
+    .hero {
+      height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      background:radial-gradient(ellipse at center, rgba(255,0,64,0.12) 0%, transparent 70%);
+    }
+    .hero-content h1 {
+      font-family:'Orbitron', monospace;
+      font-size:clamp(3.5rem, 9vw, 8rem);
+      font-weight:900;
+      margin-bottom:1.2rem;
+      background:linear-gradient(45deg, #ff0040, #00ff88, #ffaa00);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      animation:glitch 2.5s infinite;
+    }
+    .hero-content p {
+      font-size:1.6rem;
+      max-width:800px;
+      margin:0 auto 3rem;
+      opacity:0.92;
+      line-height:1.5;
+    }
+    .rankings-grid {
+      padding:120px 2rem 80px;
+      max-width:1400px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(450px, 1fr));
+      gap:3rem;
+    }
+    .ranking-card {
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,0,64,0.35);
+      border-radius:20px;
+      padding:2.5rem;
+      backdrop-filter:blur(18px);
+      transition:all 0.45s;
+      position:relative;
+      overflow:hidden;
+    }
+    .ranking-card:hover {
+      transform:translateY(-12px) scale(1.04);
+      border-color:#ff0040;
+      box-shadow:0 25px 70px rgba(255,0,64,0.35);
+    }
+    .ranking-card::before {
+      content:'%';
+      position:absolute;
+      top:0; left:-120%;
+      width:120%; height:100%;
+      background:linear-gradient(90deg, transparent, rgba(255,0,64,0.15), transparent);
+      transition:0.7s;
+    }
+    .ranking-card:hover::before { left:120%; }
+    .rank-header {
+      font-family:'Orbitron', monospace;
+      font-size:1.8rem;
+      margin-bottom:1.5rem;
+      text-align:center;
+      background:linear-gradient(90deg, #ff0040, #00ff88);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .team-row {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:1rem 0;
+      border-bottom:1px solid rgba(255,255,255,0.1);
+      transition:all 0.3s;
+    }
+    .team-row:hover {
+      background:rgba(255,0,64,0.1);
+      border-radius:10px;
+      margin:0 -1rem;
+      padding:1rem;
+    }
+    .rank-num {
+      font-family:'Orbitron', monospace;
+      font-size:2rem;
+      font-weight:900;
+      color:#ff0040;
+      min-width:50px;
+    }
+    .team-name {
+      font-size:1.3rem;
+      font-weight:700;
+      flex:1;
+    }
+    .players {
+      font-size:0.95rem;
+      opacity:0.8;
+      text-align:right;
+    }
+    .points {
+      font-family:'Orbitron', monospace;
+      font-size:1.4rem;
+      font-weight:700;
+      color:#00ff88;
+    }
+    .section-title {
+      font-family:'Orbitron', monospace;
+      font-size:3.5rem;
+      text-align:center;
+      margin:5rem 0 4rem;
+      background:linear-gradient(45deg, #ff0040, #00ff88);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    @keyframes glitch {
+      0%,100% { transform:translate(0); }
+      20% { transform:translate(-3px,3px); }
+      40% { transform:translate(-3px,-3px); }
+      60% { transform:translate(3px,3px); }
+      80% { transform:translate(3px,-3px); }
+    }
+    @media (max-width:768px) {
+      .nav-links { display:none; }
+      .hero-content h1 { font-size:4.5rem; }
+      .rankings-grid { grid-template-columns:1fr; }
+      .team-row { flex-direction:column; align-items:flex-start; gap:0.5rem; }
+      .points { align-self:flex-end; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+
+  <div class="container">
+    <header>
+      <nav>
+        <div class="logo">CS2 TOP TEAMS 2026</div>
+        <ul class="nav-links">
+          <li><a href="#!hltv">HLTV Рейтинг</a></li>
+          <li><a href="#!valve">Valve Ranking</a></li>
+          <li><a href="#!gosu">GosuGamers</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="hero-content">
+        <h1>ТОП КОМАНДЫ CS2</h1>
+        <p>HLTV World Ranking на 23 февраля 2026. Vitality доминирует с 1000 очков. FURIA, MOUZ, Falcons и PARIVISION в погоне!</p>
+      </div>
+    </section>
+
+    <section id="hltv" class="rankings-grid">
+      <div class="ranking-card">
+        <div class="rank-header">HLTV World Ranking (23.02.2026)</div>
+        <div class="team-row">
+          <span class="rank-num">1</span>
+          <span class="team-name">Vitality</span>
+          <span class="players">apEX • ropz • ZywOo • flameZ • mezii</span>
+          <span class="points">1000</span>
+        </div>
+        <div class="team-row">
+          <span class="rank-num">2</span>
+          <span class="team-name">FURIA</span>
+          <span class="players">FalleN • yuurih • YEKINDAR • KSCERATO • molodoy</span>
+          <span class="points">659</span>
+        </div>
+        <div class="team-row">
+          <span class="rank-num">3</span>
+          <span class="team-name">MOUZ</span>
+          <span class="players">Brollan • torzsi • Spinx • Jimpphat • xertioN</span>
+          <span class="points">481</span>
+        </div>
+        <div class="team-row">
+          <span class="rank-num">4</span>
+          <span class="team-name">Falcons</span>
+          <span class="players">NiKo • TeSeS • m0NESY • kyxsan • kyousuke</span>
+          <span class="points">474</span>
+        </div>
+        <div class="team-row">
+          <span class="rank-num">5</span>
+          <span class="team-name">PARIVISION</span>
+          <span class="players">Jame • BELCHONOKK • xiELO • nota • zweih</span>
+          <span class="points">381</span>
+        </div>
+      </div>
+
+      <div class="ranking-card">
+        <div class="rank-header">Valve Global Ranking (25.02.2026)</div>
+        <div class="team-row">
+          <span class="rank-num">1</span>
+          <span class="team-name">Vitality</span>
+          <span class="players">apEX • ropz • ZywOo • flameZ • mezii</span>
+          <span class="points">2029</span>
+        </div>
+        <div class="team-row">
+          <span class="rank-num">2</span>
+          <span class="team-name">FURIA</span>
+          <span class="players">FalleN • yuurih • YEKINDAR • KSCERATO • molodoy</span>
+          <span class="points">1893</span>
+        </div>
+        <div class="team-row">
+          <span class="rank-num">3</span>
+          <span class="team-name">MOUZ</span>
+          <span class="players">Brollan • torzsi • Spinx • Jimpphat • xertioN</span>
+          <span class="points">1887</span>
+        </div>
+        <div class="team-row">
+          <span class="rank-num">4</span>
+          <span class="team-name">PARIVISION</span>
+          <span class="players">Jame • BELCHONOKK • xiELO • nota • zweih</span>
+          <span class="points">1873</span>
+        </div>
+      </div>
+
+      <div class="ranking-card">
+        <div class="rank-header">GosuGamers (Февраль 2026)</div>
+        <div class="team-row">
+          <span class="rank-num">1</span>
+          <span class="team-name">Team Vitality</span>
+          <span class="points">1698</span>
+        </div>
+        <div class="team-row">
+          <span class="rank-num">2</span>
+          <span class="team-name">Team Spirit</span>
+          <span class="points">1524</span>
+        </div>
+        <div class="team-row">
+          <span class="rank-num">3</span>
+          <span class="team-name">FURIA Esports</span>
+          <span class="points">1514</span>
+        </div>
+        <div class="team-row">
+          <span class="rank-num">4</span>
+          <span class="team-name">MOUZ</span>
+          <span class="points">1488</span>
+        </div>
+        <div class="team-row">
+          <span class="rank-num">5</span>
+          <span class="team-name">Team Falcons</span>
+          <span class="points">1476</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const chars = '01CS2HLTVTOPTEAMS2026VITALITYFURIAFALCONSMOUZ';
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+
+    function draw() {
+      ctx.fillStyle = 'rgba(0,0,0,0.06)';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = '#ff0040';
+      ctx.font = fontSize + 'px monospace';
+
+      drops.forEach((y,i) => {
+        const text = chars[Math.floor(Math.random()*chars.length)];
+        ctx.fillText(text, i*fontSize, y*fontSize);
+        if(y*fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      });
+    }
+
+    setInterval(draw, 45);
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
